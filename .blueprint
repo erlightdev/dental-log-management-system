@@ -1,2 +1,33 @@
+created:
+    - database/factories/UserFactory.php
+    - database/factories/PatientFactory.php
+    - database/factories/DoctorFactory.php
+    - database/factories/StaffFactory.php
+    - database/factories/AppointmentFactory.php
+    - database/factories/ServiceFactory.php
+    - database/factories/TreatmentFactory.php
+    - database/migrations/2024_11_25_163253_create_users_table.php
+    - database/migrations/2024_11_25_163254_create_patients_table.php
+    - database/migrations/2024_11_25_163255_create_doctors_table.php
+    - database/migrations/2024_11_25_163256_create_staff_table.php
+    - database/migrations/2024_11_25_163257_create_appointments_table.php
+    - database/migrations/2024_11_25_163258_create_services_table.php
+    - database/migrations/2024_11_25_163259_create_treatments_table.php
+    - database/migrations/2024_11_25_163300_create_appointment_patient_table.php
+    - database/migrations/2024_11_25_163301_create_doctor_patient_table.php
+    - database/migrations/2024_11_25_163302_create_appointment_staff_table.php
+    - app/Models/User.php
+    - app/Models/Patient.php
+    - app/Models/Doctor.php
+    - app/Models/Staff.php
+    - app/Models/Appointment.php
+    - app/Models/Service.php
+    - app/Models/Treatment.php
 models:
-    User: {  }
+    User: { id: id, name: 'string:100', email: 'string:150 nullable unique', password: string, phone: 'number required', role: 'enum:admin,doctor,staff,patient', status: 'enum:active,inactive default:active', softdeletes: softDeletes, timestamps: timestamps, relationships: { hasOne: Patient, hasMany: 'Doctor, Staff' } }
+    Patient: { id: id, user_id: 'foreignId:users', patient_before_image: 'string:255 nullable', patient_after_image: 'string:255 nullable', gender: 'enum:male,female,other', dob: 'number nullable', blood_type: 'enum:A+,A-,B+,B-,AB+,AB-,O+,O- nullable', address: 'string nullable', medical_history_current_medications: 'string nullable', treatment_name: 'string:100 nullable', treatment_price: 'number required', service_name: 'string:100 nullable', service_price: 'number required', initial_deposit: 'number required', total_appointment_amount_deposits: 'foreignId:appointments', total_amount: 'number required', registration_date: 'date required', notes: 'string nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { belongsTo: User, hasMany: 'Treatment, Service', belongsToMany: 'Appointment, Doctor' } }
+    Doctor: { id: id, user_id: 'foreignId:users', specialization: 'string:100 nullable', license_number: 'string:50 nullable', bio: 'text nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { belongsTo: User, hasMany: Appointment, belongsToMany: Patient } }
+    Staff: { id: id, user_id: 'foreignId:users', job_title: 'string:100', department: 'string:100', bio: 'text nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { belongsTo: User, belongsToMany: Appointment } }
+    Appointment: { id: id, patient_id: 'foreignId:patients', doctor_id: 'foreignId:doctors', staff_id: 'string nullable', appointment_date: 'date required', estimated_duration: 'decimal(10,2) nullable', status: 'enum:scheduled,reschedule,completed,cancelled', cancellation_reason: 'string:255 nullable', appointment_amount_deposits: 'decimal(10,2) required', payment_status: 'nullable enum:paid,unpaid', total_appointment_amount_deposits: 'decimal(10,2) required', notes: 'text nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { belongsTo: 'Patient, Doctor' } }
+    Service: { id: id, service_name: 'string required', service_price: 'decimal(10,2)', service_description: 'string nullable', softdeletes: softDeletes, timestamps: timestamps }
+    Treatment: { id: id, name: 'string required', treatment_price: 'decimal(10,2)', treatment_description: 'string nullable', softdeletes: softDeletes, timestamps: timestamps }

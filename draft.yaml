@@ -69,9 +69,9 @@ models:
     id: id
     patient_id: foreignId:patients
     doctor_id: foreignId:doctors
-    staff_id: foreignId:staff nullable
+    staff_id: string nullable
     appointment_date: date required
-    estimated_duration: number unsigned
+    estimated_duration: decimal(10,2) nullable
     status: enum:scheduled,reschedule,completed,cancelled
     cancellation_reason: string:255 nullable
     appointment_amount_deposits: decimal(10,2) required
