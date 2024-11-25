@@ -37,8 +37,8 @@ models:
     timestamps: true
     relationships:
       belongsTo: User
-      hasMany: Treatment, Service
-      belongsToMany: Appointment, Doctor
+      hasMany: Treatment, Service, Appointment
+      belongsToMany: Doctor
 
   Doctor:
     id: id

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StaffResource\Pages;
 use App\Filament\Resources\StaffResource\RelationManagers;
+use App\Filament\Resources\StaffResource\RelationManagers\AppointmentsRelationManager;
 use App\Models\Staff;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -23,7 +24,31 @@ class StaffResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Section::make('Staff Information')
+                    ->schema([
+                        Forms\Components\Select::make('user_id')
+                            ->relationship('user', 'name')
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull(),
+                        
+                        Forms\Components\TextInput::make('job_title')
+                            ->required()
+                            ->maxLength(100)
+                            ->columnSpanFull(),
+                        
+                        Forms\Components\TextInput::make('department')
+                            ->required()
+                            ->maxLength(100)
+                            ->columnSpanFull(),
+                        
+                        Forms\Components\Textarea::make('bio')
+                            ->nullable()
+                            ->rows(3)
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -31,25 +56,53 @@ class StaffResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Name')
+                    ->searchable()
+                    ->sortable(),
+                
+                Tables\Columns\TextColumn::make('job_title')
+                    ->searchable()
+                    ->sortable(),
+                
+                Tables\Columns\TextColumn::make('department')
+                    ->searchable()
+                    ->sortable(),
+                
+                Tables\Columns\TextColumn::make('bio')
+                    ->limit(50)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            AppointmentsRelationManager::class,
         ];
     }
 
@@ -60,5 +113,13 @@ class StaffResource extends Resource
             'create' => Pages\CreateStaff::route('/create'),
             'edit' => Pages\EditStaff::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

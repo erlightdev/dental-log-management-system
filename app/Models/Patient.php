@@ -56,17 +56,17 @@ class Patient extends Model
 
     public function treatments(): HasMany
     {
-        return $this->hasMany(Treatment::class);
+        return $this->hasMany(Treatment::class, 'patient_id');
     }
 
     public function services(): HasMany
     {
-        return $this->hasMany(Service::class);
+        return $this->hasMany(Service::class, 'patient_id');
     }
 
-    public function appointments(): BelongsToMany
+    public function appointments(): HasMany
     {
-        return $this->belongsToMany(Appointment::class);
+        return $this->hasMany(Appointment::class, 'patient_id');
     }
 
     public function doctors(): BelongsToMany
