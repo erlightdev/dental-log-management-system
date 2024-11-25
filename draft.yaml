@@ -98,26 +98,3 @@ models:
     treatment_description: string nullable
     softDeletes: true
     timestamps: true
-
-seeders:
-  UserSeeder:
-    admin:
-      name: Admin User
-      email: admin@example.com
-      password: admin # password
-      role: admin
-    doctor:
-      name: Dr. John Doe
-      email: doctor@example.com
-      password: doctor # password
-      role: doctor
-    staff:
-      name: staff
-      email: staff@example.com
-      password: staff # password
-      role: staff
-    patient:
-      name: patient
-      email: staff@example.com
-      password: patient # password
-      role: staff
