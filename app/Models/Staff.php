@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Staff extends Model
@@ -39,8 +39,8 @@ class Staff extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function appointments(): BelongsToMany
+    public function appointments(): HasMany
     {
-        return $this->belongsToMany(Appointment::class);
+        return $this->hasMany(Appointment::class, 'staff_id');
     }
 }

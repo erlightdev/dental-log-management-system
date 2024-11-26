@@ -63,7 +63,7 @@ models:
     timestamps: true
     relationships:
       belongsTo: User
-      belongsToMany: Appointment
+      hasMany: Appointment
 
   Appointment:
     id: id
